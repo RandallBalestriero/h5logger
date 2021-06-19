@@ -27,7 +27,6 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "h5logger"},
     python_requires=">=3.6",
     install_requires=["h5py", "numpy"],
 )

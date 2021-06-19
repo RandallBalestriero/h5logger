@@ -10,7 +10,7 @@ np.random.seed(0)
 logger = h5logger("logging_data.h5")
 
 for i in range(10):
-    number = np.random.randint()
+    number = np.random.randint(1)
 
     # save the number realisation into the `number`
     # variable, any string can be used for name
@@ -20,5 +20,9 @@ for i in range(10):
 # access as desired by the user
 # h5logger has some built-in reading functions
 with logger.open() as data:
-    print(data["accu"])
-    #
+    print(data["number"])
+    # >>> <HDF5 dataset "number": shape (21,), type "<i8">
+    # nothing is loaded in-memory yet, loading is only done
+    # when accessing slices of data as in
+    print(data["number"][:])
+    # >>>

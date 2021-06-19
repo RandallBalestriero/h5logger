@@ -13,15 +13,27 @@ class h5logger:
 
         filename: str
             the name of the h5 file to log the data into
+        
+        replace_if_exists: bool
+            if True, then any file with same name will be deleted, if False
+            then any new logged data will be appended onto anything that already exists
     """
 
-    def __init__(self, filename: str):
-        self._filename = filename
-        if os.path.exists(filename):
-            assert filename[-2:] == "h5"
+    def __init__(self, filename: str, replace_if_exists: bool = False):
 
+        # be sure to use self.filename anywhere down this line as it
+        # took care of extension formatting automatically
+        self._filename = utils.produce_filename(filename)
+
+        if os.path.exists(self.filename) and not replace_if_exists:
+            # we have to make sure that it is a proper .h5 file
+            # and we can append data to it if needed
+            utils.check_file_validity(self.filename)
+        elif os.path.exists(self.filename) and replace_if_exists
+            os.remove(self.filename)
         else:
-            file = h5py.File(filename, "w")
+            # we simply write and close to create the file
+            file = h5py.File(self.filename, "w")
             file.close()
 
     def log(self, name: str, value: object) -> None:
@@ -40,6 +52,7 @@ class h5logger:
                     dtype=value.dtype,
                 )
             dset = f[name]
+            assert dset.shape[1:] == value.shape
             dset.resize(dset.shape[0] + 1, axis=0)
             dset[-1] = value
 
