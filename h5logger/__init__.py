@@ -1,1 +1,7 @@
-from ._logger import h5logger as h5logger
+from ._logger import h5logger
+
+__all__ = ["h5logger"]
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
