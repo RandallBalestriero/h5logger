@@ -1,21 +1,27 @@
 import os
 
 
-def produce_filename(filename):
+def produce_filename(filename: str) -> str:
     pre, ext = os.path.splitext(filename)
     if ext == "":
         return filename + ".h5"
-    elif exp == ".h5":
+    elif ext == ".h5":
         return filename
     raise RuntimeError(
         "provided filename has file extension {ext} that is not compatible with h5"
     )
 
 
-def check_file_validity(filename):
+def check_file_validity(filename: str) -> bool:
     pre, ext = os.path.splitext(filename)
-    assert ext == "h5"
+    if ext == "h5":
+        return True
+    else:
+        return False
 
 
-def validate_log(filename):
-    assert os.path.exists(filename)
+def validate_log(filename: str) -> bool:
+    if os.path.exists(filename):
+        return True
+    else:
+        return False

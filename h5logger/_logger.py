@@ -13,7 +13,7 @@ class h5logger:
 
         filename: str
             the name of the h5 file to log the data into
-        
+
         replace_if_exists: bool
             if True, then any file with same name will be deleted, if False
             then any new logged data will be appended onto anything that already exists
@@ -29,7 +29,7 @@ class h5logger:
             # we have to make sure that it is a proper .h5 file
             # and we can append data to it if needed
             utils.check_file_validity(self.filename)
-        elif os.path.exists(self.filename) and replace_if_exists
+        elif os.path.exists(self.filename) and replace_if_exists:
             os.remove(self.filename)
         else:
             # we simply write and close to create the file
@@ -47,7 +47,7 @@ class h5logger:
             if name not in f:
                 f.create_dataset(
                     name,
-                    (1,) + value.shape,
+                    (0,) + value.shape,
                     maxshape=(None,) + value.shape,
                     dtype=value.dtype,
                 )
