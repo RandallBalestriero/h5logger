@@ -1,0 +1,6 @@
+# Python requirements
+-e ./
+h5py>=2.10.0
+pytest==5.3.5
+wheel
+black>=19.3b0; platform.python_implementation!='PyPy'
