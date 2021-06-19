@@ -17,10 +17,11 @@ setuptools.setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: BSD License",
+        "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
     ],
     package_dir={"": "h5logger"},
     packages=setuptools.find_packages(where="h5logger"),
     python_requires=">=3.6",
+    install_requires=["h5py", "numpy"],
 )

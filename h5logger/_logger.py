@@ -2,11 +2,20 @@ import h5py
 import numpy as np
 import os
 from contextlib import contextmanager
-from . import utils
+from . import _utils as utils
 
 
 class h5logger:
-    def __init__(self, filename):
+    """h5 logger
+
+    Args:
+    -----
+
+        filename: str
+            the name of the h5 file to log the data into
+    """
+
+    def __init__(self, filename: str):
         self._filename = filename
         if os.path.exists(filename):
             assert filename[-2:] == "h5"
@@ -15,7 +24,7 @@ class h5logger:
             file = h5py.File(filename, "w")
             file.close()
 
-    def log(self, name, value):
+    def log(self, name: str, value: object) -> None:
         utils.validate_log(self.filename)
         if not hasattr(value, "shape"):
             value = np.array(value)
@@ -50,7 +59,3 @@ class h5logger:
             yield f
         finally:
             f.close()
-
-    def __getitem__(self, key):
-        with self.open() as data:
-            return data[key]
