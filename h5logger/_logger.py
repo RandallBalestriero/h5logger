@@ -55,12 +55,14 @@ class h5logger:
         replace_if_exists: bool = False,
         concurrent_readers: bool = False,
         datasets: dict or None = None,
+        n_datasets: int or None = None,
     ):
 
         # be sure to use self.filename anywhere down this line as it
         # took care of extension formatting automatically
         self._filename = utils.produce_filename(filename)
         self._concurrent_readers = concurrent_readers
+        self._n_datasets = n_datasets
 
         if os.path.exists(self.filename) and not replace_if_exists:
             # we have to make sure that it is a proper .h5 file
@@ -106,6 +108,8 @@ class h5logger:
             value = np.array(value)
 
         if name not in self._file:
+            if self._n_datasets and len(list(self.keys())) == self._n_datasets:
+                raise ValueError("trying to add dataset to already locked logger")
             if self._file.swmr_mode:
                 raise RuntimeError(
                     "trying to log a non-initialized dataset with concurrent readers on"
@@ -116,6 +120,10 @@ class h5logger:
                 maxshape=(None,) + value.shape,
                 dtype=value.dtype,
             )
+            # note that once this condition is valid, it will never be
+            # seen again (in theory)
+            if self._n_datasets and len(list(self.keys())) == self._n_datasets:
+                self.enable_concurrent_readers()
 
         dset = self._file[name]
         if name in self._need_full_resize:

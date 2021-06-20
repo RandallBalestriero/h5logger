@@ -3,7 +3,7 @@
 h5logger is a minimalist logger that allows to save arbitrary quantities/arrays into h5 files in a continuous/streaming manner. The logger automatically create/open/close h5 files and append data as a stream whenever the user calls the ``log`` method of the ``h5logger`` class. Only dependancy requirement is [h5py](https://docs.h5py.org/en/stable/build.html) and [NumPy](https://github.com/RandallBalestriero/h5logger).
 
 
-## Walkthrough example
+## Walk-through example
 
  Here is a simple example to store different
  realisation of random binary variables:
@@ -80,7 +80,7 @@ The first is direct and simple to implement as in the example above. The second 
         datasets={"name0": (1, "int"), "name1": (1, "float")},
     )
     ```
-2. only allow ocncurrent reading once all the quantities to monitor have been recorded at least once as in
+2. only allow concurrent reading once all the quantities to monitor have been recorded at least once as in
     ```
     logger = h5logger("data.h5")
     for i in range(steps):
@@ -89,4 +89,8 @@ The first is direct and simple to implement as in the example above. The second 
         logger.log("name2", 10*number)
         logger.enable_concurrent_readers()
     ```
-    note that in this case, there is no need to a priori specify the values to be logged, but the data file will only be readable concurrent after the call to `enable_concurrent_readers`. Additionally, only the first call has effect, hence we do not worry about calling it again at each iteration in this case. This should be the preferred solution whenever applicable
+    note that in this case, there is no need to a priori specify the values to be logged, but the data file will only be readable concurrent after the call to `enable_concurrent_readers`. Additionally, only the first call has effect, hence we do not worry about calling it again at each iteration in this case. 
+
+3. knowing a priori the number of variables that will be tracked, once all have started to be tracked, the dataset will automatically switch its internal state to allow concurrent readers. In this case one would initialize the logger with `h5logger("data.h5", n_datasets=2)`
+
+Solution 2. and 3. are the preferred solution whenever applicable.
