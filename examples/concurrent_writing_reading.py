@@ -41,6 +41,22 @@ def background_writer_option2(steps):
     logger.close()
 
 
+def background_writer_option3(steps):
+    """dummy background saver"""
+    np.random.seed(2)
+    logger = h5logger(
+        "logging_data_concurrent.h5", replace_if_exists=True, n_datasets=2
+    )
+
+    for i in range(steps):
+        time.sleep(1)
+        number = np.random.randn()
+        logger.log("number", number)
+        if i % 2 == 0:
+            logger.log("even_number", 20 * number)
+    logger.close()
+
+
 def reader_option1():
     with h5logger.open("logging_data_concurrent.h5") as data:
         dset = data["even_number"]
@@ -85,6 +101,23 @@ reader_option2()
 p.join()
 
 # [-8.33515695]
+# [-8.33515695]
+# [ -8.33515695 -42.72392191]
+# [ -8.33515695 -42.72392191]
+# [ -8.33515695 -42.72392191 -35.8687117 ]
+# [ -8.33515695 -42.72392191 -35.8687117 ]
+# [ -8.33515695 -42.72392191 -35.8687117   10.05762834]
+# [ -8.33515695 -42.72392191 -35.8687117   10.05762834]
+# [ -8.33515695 -42.72392191 -35.8687117   10.05762834 -21.15904438]
+
+p = Process(target=background_writer_option3, args=(10,))
+p.start()
+time.sleep(0.2)
+reader_option2()
+p.join()
+
+# Unable to open file (unable to lock file, errno = 35, error message = 'Resource temporarily unavailable')
+# Retrying in 2 secondes...
 # [-8.33515695]
 # [ -8.33515695 -42.72392191]
 # [ -8.33515695 -42.72392191]
